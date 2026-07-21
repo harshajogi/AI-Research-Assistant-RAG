@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AI Research Assistant</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- Header -->
+
+    <header>
+
+        <div class="logo">
+
+            🤖
+
+            <div>
+
+                <h1>AI Research Assistant</h1>
+
+                <span>Chat with your uploaded documents</span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- Upload Card -->
+
+    <section class="upload-card">
+
+        <h2>
+
+            📄 Upload Document
+
+        </h2>
+
+        <p>
+
+            Select a PDF and upload it to start chatting.
+
+        </p>
+
+        <div class="upload-row">
+
+            <input
+                type="file"
+                id="pdf"
+                accept=".pdf"
+            >
+
+            <button id="uploadBtn">
+
+                Upload PDF
+
+            </button>
+
+        </div>
+
+        <div id="status"></div>
+
+    </section>
+
+    <!-- Chat Area -->
+
+    <section
+        id="chatBox"
+        class="chat-area"
+    >
+
+        <div class="welcome">
+
+            <div class="welcome-icon">
+
+                🤖
+
+            </div>
+
+            <h2>
+
+                Welcome!
+
+            </h2>
+
+            <p>
+
+                Upload a PDF and start asking questions.
+
+            </p>
+
+            <div class="examples">
+
+                <div class="example">
+
+                    What is this document about?
+
+                </div>
+
+                <div class="example">
+
+                    Summarize this PDF.
+
+                </div>
+
+                <div class="example">
+
+                    Who are the authors?
+
+                </div>
+
+                <div class="example">
+
+                    Explain the key findings.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Chat Input -->
+
+    <footer class="chat-input">
+
+        <input
+
+            type="text"
+
+            id="question"
+
+            placeholder="Ask anything about your document..."
+
+        >
+
+        <button id="askBtn">
+
+            ➜
+
+        </button>
+
+    </footer>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
