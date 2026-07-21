@@ -1,0 +1,241 @@
+{
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ask",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -432,
+        -64
+      ],
+      "id": "13e32818-753b-40a7-8e71-267c2681ae06",
+      "name": "Webhook",
+      "webhookId": "d1135dbf-98ff-4d97-ba26-07ba2c6116d1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "AQ.Ab8RN6KtUJPXTwFuMOtQrp2qS0-Lj2L4lOOxOGiIp442oqyKhQ"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n{\n  \"model\": \"models/gemini-embedding-001\",\n  \"content\": {\n    \"parts\": [\n      {\n        \"text\": $json.body.question\n      }\n    ]\n  }\n}\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -224,
+        -64
+      ],
+      "id": "dbf43bee-2ad9-45d3-a312-d6fcb8cbe50c",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Get the JSON output from the Qdrant HTTP node\nconst response = $input.first().json;\n\n// 2. Initialize an empty array\nlet points = [];\n\n// 3. Safely locate the array of matches, accounting for different Qdrant formats\nif (response.result && Array.isArray(response.result)) {\n  points = response.result; \n} else if (response.result && response.result.points && Array.isArray(response.result.points)) {\n  points = response.result.points;\n} else if (Array.isArray(response)) {\n  points = response;\n}\n\n// 4. If we still don't have an array, stop and show exactly what Qdrant sent back\nif (!Array.isArray(points)) {\n  throw new Error(\"Expected an array from Qdrant, but got: \" + JSON.stringify(response));\n}\n\n// 5. Map the text safely and join it for the LLM\nconst context = points\n  .filter(point => point.payload && point.payload.text) // Skips points that have no text\n  .map(point => point.payload.text)\n  .join(\"\\n\\n------------------\\n\\n\");\n\nreturn [\n  {\n    json: {\n      context: context\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        -64
+      ],
+      "id": "9820ca89-4307-40ad-8f38-1ddd2ef2ee0c",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Question:\n{{ $('Webhook').first().json.body.question }}\n\nContext:\n{{ $json.context }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an AI Research Assistant.\n\nAnswer ONLY from the provided context.\n\nIf the answer is not present in the context, reply exactly:\n\n\"I couldn't find that information in the uploaded document.\"\n\nDo not use your own knowledge."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        608,
+        -64
+      ],
+      "id": "0ab58655-4fa1-4892-b0ab-eb0ccdef9557",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ \"answer\": $json.text }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        960,
+        -64
+      ],
+      "id": "a2d91fb3-eeda-4662-9bab-7032561fd716",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://18df8386-b521-4db1-8e3b-b7b5cd2bbf1e.sa-east-1-0.aws.cloud.qdrant.io/collections/research_documents/points/query",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api-key",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIiwic3ViamVjdCI6ImFwaS1rZXk6N2VhOTZkNzktNjIwYi00MGI3LThiMTAtZmFkMzU1MmNiOGMzIn0.-qPq-HUaudYSrNpafXIqQpUiZ1uBbuvWXWOHeEjes38"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  \"query\": $json.embedding.values,\n  \"using\": \"degault\",\n  \"limit\": 5,\n  \"with_payload\": true\n}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -16,
+        -64
+      ],
+      "id": "d47807d1-01d4-4eae-9ff3-2a77402926f1",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3-235b-a22b-2507",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        544,
+        144
+      ],
+      "id": "78e514a5-59da-4be5-b0ae-864209783f1d",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "EULk9LvoCiG0ASP9",
+          "name": "OpenRouter account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "57aa0c9a-2e25-46c6-abe9-acb2ac4a99aa",
+  "meta": {
+    "instanceId": "e06569a44ea2bbd798acbe9de744fc7dadc781d2454bd7dafab81f1870deb1b1"
+  },
+  "nodeGroups": [],
+  "id": "BFDts0Oe4xiNjnMQ",
+  "tags": []
+}
