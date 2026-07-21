@@ -154,7 +154,7 @@ This document reviews published studies on family caregiving for schizophrenia p
 ---
 ---
 
----
+
 
 #  n8n Nodes Used
 
@@ -177,7 +177,7 @@ This document reviews published studies on family caregiving for schizophrenia p
 - OpenRouter
 - Respond To Webhook
 ---
----
+
 
 #  Workflow Explanation
 
@@ -206,7 +206,7 @@ These retrieved chunks are provided to the OpenRouter LLM as context.
 The LLM generates the final answer which is returned to the user.
 
 ---
----
+
 
 # 🗄 Data Structure
 
@@ -230,7 +230,7 @@ Payload
     text : Chunk Text
 }
 ```
----
+
 
 ##  Future Improvements
 
