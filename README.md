@@ -136,6 +136,101 @@ This document reviews published studies on family caregiving for schizophrenia p
 ```
 
 ---
+---
+
+#  Implementation Steps
+
+1. Built the frontend using HTML, CSS and JavaScript.
+2. Created an Upload Workflow in n8n.
+3. Extracted text from uploaded PDF files.
+4. Split the extracted text into smaller chunks.
+5. Generated embeddings using Gemini Embedding API.
+6. Stored embeddings and text payload in Qdrant Vector Database.
+7. Built a Question Answering workflow.
+8. Converted user questions into embeddings.
+9. Retrieved relevant document chunks from Qdrant.
+10. Sent retrieved context to OpenRouter LLM.
+11. Returned the generated answer to the frontend.
+---
+---
+
+---
+
+#  n8n Nodes Used
+
+## Upload Workflow
+
+- Webhook
+- Extract From File
+- IF
+- Code
+- Loop Over Items
+- HTTP Request (Gemini Embedding)
+- Code
+- HTTP Request (Qdrant)
+
+## Ask Workflow
+
+- Webhook
+- HTTP Request (Gemini Embedding)
+- HTTP Request (Qdrant Search)
+- OpenRouter
+- Respond To Webhook
+---
+---
+
+#  Workflow Explanation
+
+## Upload Workflow
+
+The upload workflow receives a PDF document from the user.
+
+The document text is extracted and divided into smaller chunks.
+
+Each chunk is converted into embeddings using Google's Gemini Embedding API.
+
+The embeddings along with their original text are stored in Qdrant Vector Database.
+
+---
+
+## Ask Workflow
+
+The user submits a question.
+
+The question is converted into an embedding.
+
+Qdrant performs semantic similarity search and retrieves the most relevant document chunks.
+
+These retrieved chunks are provided to the OpenRouter LLM as context.
+
+The LLM generates the final answer which is returned to the user.
+
+---
+---
+
+# 🗄 Data Structure
+
+## Qdrant Collection
+
+Collection Name
+
+```
+research_documents
+```
+
+Each stored point contains:
+
+```
+ID (UUID)
+
+Vector (3072 Dimensions)
+
+Payload
+{
+    text : Chunk Text
+}
+```
+---
 
 ##  Future Improvements
 
