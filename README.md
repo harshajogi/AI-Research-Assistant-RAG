@@ -1,12 +1,12 @@
 # AI Research Assistant using Retrieval-Augmented Generation (RAG)
 
-## 📌 Project Overview
+##  Project Overview
 
 The AI Research Assistant is an intelligent document question-answering system that allows users to upload PDF documents and ask questions in natural language. The system extracts text from uploaded documents, converts them into vector embeddings, stores them in a vector database, retrieves the most relevant information based on the user's query, and generates accurate answers using a Large Language Model.
 
 ---
 
-## 🎯 Problem Statement
+##  Problem Statement
 
 Searching information manually in large documents such as research papers, company policies, technical manuals, and reports is time-consuming.
 
@@ -14,7 +14,7 @@ The objective of this project is to build an AI-powered assistant capable of und
 
 ---
 
-## 💡 Solution Overview
+##  Solution Overview
 
 The project is divided into two workflows:
 
@@ -36,7 +36,7 @@ The project is divided into two workflows:
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 User
@@ -104,7 +104,7 @@ AI-Research-Assistant-RAG/
 
 ---
 
-## 📸 Workflow Screenshots
+##  Workflow Screenshots
 
 ### Upload Workflow
 
@@ -115,6 +115,9 @@ AI-Research-Assistant-RAG/
 
 <img width="1656" height="646" alt="Screenshot 2026-07-21 201046" src="https://github.com/user-attachments/assets/c9361876-415a-46dd-93d8-acc8a64d7a1a" />
 
+## Frontend
+
+<img width="1875" height="923" alt="Screenshot 2026-07-21 202616" src="https://github.com/user-attachments/assets/037dc944-17e2-4adb-a137-fd0c7c2e648f" />
 
 ---
 
@@ -134,7 +137,7 @@ This document reviews published studies on family caregiving for schizophrenia p
 
 ---
 
-## 🚀 Future Improvements
+##  Future Improvements
 
 - Telegram Bot Integration
 - Multi-document support
@@ -146,6 +149,6 @@ This document reviews published studies on family caregiving for schizophrenia p
 
 ---
 
-## 👨‍💻 Developed By
+##  Developed By
 
 Harsha Jogi
